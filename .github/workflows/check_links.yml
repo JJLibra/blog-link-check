@@ -44,9 +44,9 @@ jobs:
       run: |
         cp ./result.json static/
         cd static
-        git add result.json
+        git add -f result.json
         git commit -m "⏱️ GitHub Action每日定时更新"
-        git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:page  # 指定推送到 page 分支
+        git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:page
 
     - name: Delete Workflow Runs
       uses: Mattraks/delete-workflow-runs@v2
