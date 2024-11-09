@@ -1,4 +1,4 @@
 .env
 *.json
-.github/
+# .github/
 .vscode/
