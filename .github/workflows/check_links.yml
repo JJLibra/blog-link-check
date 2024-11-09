@@ -12,13 +12,15 @@ env:
 jobs:
   check_links:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Pull latest repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Install python
-      uses: actions/setup-python@v2
+    - name: Install Python 3.x
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
@@ -27,7 +29,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Python script to check frined-links
+    - name: Run Python script to check friend-links
       env:
         LIJIANGAPI_TOKEN: ${{ secrets.LIJIANGAPI_TOKEN }}
         PROXY_URL: ${{ secrets.PROXY_URL }}
@@ -42,11 +44,10 @@ jobs:
       run: |
         cp ./result.json static/
         cd static
-        git init
-        git add .
-        git commit -m "⏱️GitHub Action每日定时更新"
-        git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:page
-    
+        git add result.json
+        git commit -m "⏱️ GitHub Action每日定时更新"
+        git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:page  # 指定推送到 page 分支
+
     - name: Delete Workflow Runs
       uses: Mattraks/delete-workflow-runs@v2
       with:
