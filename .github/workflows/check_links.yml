@@ -1,0 +1,68 @@
+name: Check Links and Generate JSON
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  check_links:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Pull latest repository
+      uses: actions/checkout@v2
+
+    - name: Install python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Python script to check frined-links
+      env:
+        LIJIANGAPI_TOKEN: ${{ secrets.LIJIANGAPI_TOKEN }}
+        PROXY_URL: ${{ secrets.PROXY_URL }}
+      run: python test-friend.py
+
+    - name: Configure git
+      run: |
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+
+    - name: Commit and push
+      run: |
+        cp ./result.json static/
+        cd static
+        git init
+        git add .
+        git commit -m "⏱️GitHub Action每日定时更新"
+        git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:page
+    
+    - name: Delete Workflow Runs
+      uses: Mattraks/delete-workflow-runs@v2
+      with:
+        retain_days: 30
+        keep_minimum_runs: 6
+
+  keepalive-workflow:
+    name: Keepalive Workflow
+    if: ${{ always() }}
+    needs: check_links
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gautamkrishnar/keepalive-workflow@v2
+        with:
+          committer_username: "github-actions[bot]"
+          committer_email: "github-actions[bot]@users.noreply.github.com"
