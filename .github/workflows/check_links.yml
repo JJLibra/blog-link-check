@@ -44,7 +44,8 @@ jobs:
       run: |
         cp ./result.json static/
         cd static
-        git add result.json
+        git init
+        git add .
         git commit -m "⏱️GitHub Action每日定时更新"
         git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:page
 
