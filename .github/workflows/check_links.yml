@@ -31,7 +31,7 @@ jobs:
       env:
         LIJIANGAPI_TOKEN: ${{ secrets.LIJIANGAPI_TOKEN }}
         PROXY_URL: ${{ secrets.PROXY_URL }}
-      run: python test-friend.py
+      run: python check_with_json.py
 
     - name: Configure git
       run: |
