@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
+      actions: write # 修复“Delete Workflow Runs”权限问题
 
     steps:
     - name: Pull latest repository
