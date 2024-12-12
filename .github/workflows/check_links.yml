@@ -3,7 +3,6 @@ name: Check Links and Generate JSON
 on:
   schedule:
     - cron: '0 */6 * * *'
-
   workflow_dispatch:
 
 env:
@@ -54,6 +53,9 @@ jobs:
       with:
         retain_days: 30
         keep_minimum_runs: 6
+        token: ${{ secrets.GITHUB_TOKEN }}
+        baseUrl: https://api.github.com
+        repository: JJLibra/blog-link-check
 
   keepalive-workflow:
     name: Keepalive Workflow
